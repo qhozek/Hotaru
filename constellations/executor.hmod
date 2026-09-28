@@ -1,6 +1,6 @@
 HOTARU = {
     "id": "executor",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "commands": ["sh", "py", "kill"],
     "capabilities": ["mt", "files", "net", "state"],
 }
@@ -209,10 +209,15 @@ class OutputUpdater:
         n = max(len(self._pages), 1)
         if n <= 1:
             return []
+        token = {"t": self.start_time, "n": n}
+        prev = dict(token)
+        prev["i"] = (idx - 1) % n
+        nxt = dict(token)
+        nxt["i"] = (idx + 1) % n
         return [
             [
-                ui.button("<", self._on_page, (idx - 1) % n),
-                ui.button(">", self._on_page, (idx + 1) % n),
+                ui.button("<", self._on_page, prev),
+                ui.button(">", self._on_page, nxt),
             ],
             [ui.button("x", self._on_del)],
         ]
@@ -236,7 +241,20 @@ class OutputUpdater:
 
     async def _on_page(self, call: Any, payload: Any) -> None:
         n = max(len(self._pages), 1)
-        idx = int(payload) % n if payload is not None else 0
+        if isinstance(payload, dict):
+            data = cast('dict[str, Any]', payload)
+            try:
+                idx = int(data.get("i", 0)) % n
+            except Exception:
+                idx = 0
+            if data.get("n") != n or data.get("t") != self.start_time:
+                try:
+                    await call.answer(self.ctx.t('kernel.executor.stale'), alert=True)
+                except Exception:
+                    pass
+                return
+        else:
+            idx = int(payload) % n if payload is not None else 0
         self._page = idx
         text = self._pages[idx] if self._pages else ""
         try:

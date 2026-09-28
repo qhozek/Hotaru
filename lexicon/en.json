@@ -484,6 +484,7 @@
       "killed": "<b>Process killed!</b>",
       "no_process": "<b>No active process found for this message.</b>",
       "slow": "Too fast, wait {seconds}s.",
+      "stale": "Buttons are outdated, run the command again.",
       "section": {
         "code": "Code",
         "command": "Command",
