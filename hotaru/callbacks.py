@@ -434,7 +434,11 @@ class CallbackStore:
         entry = self._load(handle)
         if entry is None:
             raise CallbackDenied("callback is invalid")
-        value = dict(self.consume(handle, entry.binding))
+        value = dict(entry.value)
+        entry.consumed = True
+        if self.connection is not None:
+            self.connection.execute("UPDATE callback_store SET consumed = 1 WHERE handle = ?", (handle,))
+            self.connection.commit()
         if scope is not None:
             value.update(scope)
         return self.issue(binding, value)
@@ -444,7 +448,10 @@ class CallbackStore:
         for key in stale:
             self._items.pop(key, None)
         if self.connection is not None:
-            self.connection.execute("DELETE FROM callback_store WHERE consumed = 1")
+            self.connection.execute(
+                "DELETE FROM callback_store WHERE consumed = 1 AND rowid NOT IN "
+                "(SELECT rowid FROM callback_store WHERE consumed = 1 ORDER BY rowid DESC LIMIT 500)"
+            )
             self.connection.commit()
 
     def _trim_cache(self) -> None:
