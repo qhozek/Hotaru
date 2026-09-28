@@ -271,7 +271,9 @@ class OutputUpdater:
             pass
         async with self._lock:
             try:
-                await call.edit(text, kbd=self._kbd(self._nav(idx)))
+                markup = self._kbd(self._nav(idx))
+                rows: Any = markup.get("inline_keyboard") if isinstance(markup, dict) else []
+                await call.edit(text, buttons=rows if isinstance(rows, list) else [])
             except Exception as exc:
                 name = type(exc).__name__
                 lowered = (str(exc) or "").casefold()
