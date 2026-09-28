@@ -473,6 +473,7 @@
     },
     "executor": {
       "heading": "<b>Executor</b> | <code>{elapsed:.1f}ms</code>",
+      "page": "Page {cur}/{total}",
       "exit_code": "Exit code: {returncode}",
       "running": "Running...",
       "usage_sh": "<b>Usage:</b> <code>{prefix}sh &lt;command&gt;</code>",

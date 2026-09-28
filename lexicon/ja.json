@@ -479,6 +479,7 @@
     },
     "executor": {
       "heading": "<b>実行</b> | <code>{elapsed:.1f} ミリ秒</code>",
+      "page": "ページ {cur}/{total}",
       "exit_code": "終了コード: {returncode}",
       "running": "実行中…",
       "usage_sh": "<b>使い方:</b> <code>{prefix}sh &lt;コマンド&gt;</code>",

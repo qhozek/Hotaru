@@ -479,6 +479,7 @@
     },
     "executor": {
       "heading": "<b>Орындаушы</b> | <code>{elapsed:.1f} мс</code>",
+      "page": "Бет {cur}/{total}",
       "exit_code": "Аяқталу коды: {returncode}",
       "running": "Орындалуда…",
       "usage_sh": "<b>Қолдану:</b> <code>{prefix}sh &lt;команда&gt;</code>",

@@ -473,6 +473,7 @@
     },
     "executor": {
       "heading": "<b>Исполнитель</b> | <code>{elapsed:.1f} мс</code>",
+      "page": "Стр. {cur}/{total}",
       "exit_code": "Код завершения: {returncode}",
       "running": "Выполняется…",
       "usage_sh": "<b>Использование:</b> <code>{prefix}sh &lt;команда&gt;</code>",
