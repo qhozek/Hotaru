@@ -241,6 +241,14 @@ class OutputUpdater:
 
     async def _on_page(self, call: Any, payload: Any) -> None:
         n = max(len(self._pages), 1)
+        mine = _sent_id(self.msg)
+        theirs = _msg_id(call)
+        if isinstance(mine, int) and isinstance(theirs, int) and mine != theirs:
+            try:
+                await call.answer(self.ctx.t('kernel.executor.stale'), alert=True)
+            except Exception:
+                pass
+            return
         if isinstance(payload, dict):
             data = cast('dict[str, Any]', payload)
             try:
