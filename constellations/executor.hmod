@@ -168,9 +168,17 @@ class OutputUpdater:
             n = len(text)
             while i < n:
                 take = min(n - i, room)
+                if i + take < n:
+                    cut = text.rfind("\n", i, i + take)
+                    if cut > i:
+                        take = cut - i + 1
                 h = self._fmt_entry(title, text[i:i + take], is_code, lang)
                 while _u16(h) > room and take > 1:
                     take = max(1, take * room // _u16(h))
+                    if i + take < n:
+                        cut = text.rfind("\n", i, i + take)
+                        if cut > i:
+                            take = cut - i + 1
                     h = self._fmt_entry(title, text[i:i + take], is_code, lang)
                 blocks.append(h)
                 i += take
@@ -231,7 +239,27 @@ class OutputUpdater:
         idx = int(payload) % n if payload is not None else 0
         self._page = idx
         text = self._pages[idx] if self._pages else ""
-        await call.edit(text, kbd=self._kbd(self._nav(idx)))
+        try:
+            await call.edit(text, kbd=self._kbd(self._nav(idx)))
+        except Exception as exc:
+            name = type(exc).__name__
+            lowered = (str(exc) or "").casefold()
+            if "notmodified" in name.casefold() or "not modified" in lowered or "message_not_modified" in lowered:
+                try:
+                    await call.answer()
+                except Exception:
+                    pass
+                return
+            seconds = getattr(exc, "seconds", None)
+            if seconds is None:
+                seconds = getattr(exc, "value", None)
+            if "flood" in name.casefold() or "wait" in name.casefold() or isinstance(seconds, (int, float)):
+                try:
+                    await call.answer(self.ctx.t('kernel.executor.slow', seconds=seconds if isinstance(seconds, (int, float)) else "?"), alert=True)
+                except Exception:
+                    pass
+                return
+            raise
         try:
             await call.answer()
         except Exception:

@@ -483,6 +483,7 @@
       "kill_reply": "<b>Reply to a running py/sh output message to kill it.</b>",
       "killed": "<b>Process killed!</b>",
       "no_process": "<b>No active process found for this message.</b>",
+      "slow": "Too fast, wait {seconds}s.",
       "section": {
         "code": "Code",
         "command": "Command",
