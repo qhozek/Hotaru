@@ -479,6 +479,7 @@
     },
     "executor": {
       "heading": "<b>Виконавець</b> | <code>{elapsed:.1f} мс</code>",
+      "page": "Стор. {cur}/{total}",
       "exit_code": "Код завершення: {returncode}",
       "running": "Виконується…",
       "usage_sh": "<b>Використання:</b> <code>{prefix}sh &lt;команда&gt;</code>",

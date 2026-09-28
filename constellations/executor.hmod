@@ -1,6 +1,6 @@
 HOTARU = {
     "id": "executor",
-    "version": "3.3.10",
+    "version": "3.4.0",
     "commands": ["sh", "py", "kill"],
     "capabilities": ["mt", "files", "net", "state"],
 }
@@ -148,7 +148,7 @@ class OutputUpdater:
     def _pages_from(self, sections: list[Any], returncode: int | None) -> list[str]:
         elapsed = (time.perf_counter() - self.start_time) * 1000
         head = self.ctx.t('kernel.executor.heading', elapsed=elapsed)
-        limit = 4096
+        limit = 4032
         room = max(64, limit - _u16(head) - 2)
         blocks: list[str] = []
         entries = list(sections)
@@ -186,6 +186,12 @@ class OutputUpdater:
             cur.append(block)
             size += add
         pages.append("\n\n".join(cur))
+        if len(pages) > 1:
+            footed: list[str] = []
+            for index, page in enumerate(pages):
+                foot = self.ctx.t('kernel.executor.page', cur=index + 1, total=len(pages))
+                footed.append(page + "\n" + foot)
+            return footed
         return pages
 
     def _nav(self, idx: int) -> list[Any]:
